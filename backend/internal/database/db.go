@@ -45,8 +45,20 @@ func InitDB(databaseURL string) (*DB, error) {
 		db.SetConnMaxLifetime(5 * time.Minute)
 	}
 
-	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("failed to ping database: %w", err)
+	// Retry connection logic for containerized environments
+	maxRetries := 10
+	for i := 1; i <= maxRetries; i++ {
+		err = db.Ping()
+		if err == nil {
+			log.Printf("Successfully connected to database on attempt %d", i)
+			break
+		}
+		log.Printf("Database connection attempt %d/%d failed: %v. Retrying in 2s...", i, maxRetries, err)
+		time.Sleep(2 * time.Second)
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to ping database after %d attempts: %w", maxRetries, err)
 	}
 
 	customDB := &DB{DB: db, Driver: driverName}
