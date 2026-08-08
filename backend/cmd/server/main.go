@@ -43,7 +43,13 @@ func main() {
 
 	// CORS Setup
 	allowedOriginsEnv := os.Getenv("CORS_ALLOWED_ORIGINS")
-	allowedOrigins := []string{"http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8080"}
+
+	allowedOrigins := []string{
+		"http://localhost:3000",
+		"http://127.0.0.1:3000",
+		"http://localhost:8080",
+	}
+
 	if allowedOriginsEnv != "" {
 		allowedOrigins = strings.Split(allowedOriginsEnv, ",")
 	}
@@ -71,8 +77,12 @@ func main() {
 		r.Delete("/{id}", taskHandler.DeleteTask)
 	})
 
-	log.Printf("🚀 Go Engineering Task Manager REST API running on port %s", port)
-	if err := http.ListenAndServe(":"+port, r); err != nil {
+	// Start server
+	addr := "0.0.0.0:" + port
+
+	log.Printf("🚀 Go Engineering Task Manager REST API running on %s", addr)
+
+	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }
