@@ -154,8 +154,8 @@ docker compose up --build
 ```
 Access the application:
 - **Frontend App**: [http://localhost:3000](http://localhost:3000)
-- **Go REST API Health Check**: [http://localhost:8080/health](http://localhost:8080/health)
-- **Go REST API Tasks Endpoint**: [http://localhost:8080/api/tasks](http://localhost:8080/api/tasks)
+- **Go REST API Health Check**: [http://localhost:8081/health](http://localhost:8081/health)
+- **Go REST API Tasks Endpoint**: [http://localhost:8081/api/tasks](http://localhost:8081/api/tasks)
 
 ---
 
