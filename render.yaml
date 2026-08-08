@@ -29,10 +29,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: task-manager-backend-api
-          property: host
+        value: https://task-manager-backend-api.onrender.com/api/tasks
 
 databases:
   # 3. Managed PostgreSQL Database

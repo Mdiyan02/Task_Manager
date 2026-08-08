@@ -1,8 +1,29 @@
 import { Task, CreateTaskInput, UpdateTaskInput, TaskStatus, TaskStats, TaskFilters } from '../types/task';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/tasks';
+function getApiBaseUrl(): string {
+  let envUrl = import.meta.env.VITE_API_URL || '';
+  if (!envUrl) {
+    return '/api/tasks';
+  }
+  // If protocol missing (e.g. host name only), prepend https://
+  if (!envUrl.startsWith('http://') && !envUrl.startsWith('https://') && !envUrl.startsWith('/')) {
+    envUrl = `https://${envUrl}`;
+  }
+  // Ensure it points to /api/tasks
+  if (!envUrl.endsWith('/api/tasks') && !envUrl.endsWith('/api/tasks/')) {
+    envUrl = `${envUrl.replace(/\/+$/, '')}/api/tasks`;
+  }
+  return envUrl.replace(/\/+$/, '');
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 async function handleResponse<T>(response: Response): Promise<T> {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('text/html')) {
+    throw new Error(`API endpoint returned HTML (likely invalid API URL or 404 rewrite). Expected JSON.`);
+  }
+
   if (!response.ok) {
     let errorMessage = `HTTP Error ${response.status}`;
     try {
@@ -11,7 +32,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
         errorMessage = errorData.error;
       }
     } catch {
-      // JSON parse fallback
+      // fallback
     }
     throw new Error(errorMessage);
   }
