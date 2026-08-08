@@ -58,6 +58,7 @@ func main() {
 	}))
 
 	// Routes
+	r.Get("/", taskHandler.RootWelcome)
 	r.Get("/health", taskHandler.HealthCheck)
 
 	r.Route("/api/tasks", func(r chi.Router) {

@@ -177,6 +177,19 @@ func (h *TaskHandler) GetTaskStats(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, stats)
 }
 
+func (h *TaskHandler) RootWelcome(w http.ResponseWriter, r *http.Request) {
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"name":    "Engineering Task Manager REST API",
+		"status":  "healthy",
+		"version": "1.0.0",
+		"endpoints": map[string]string{
+			"health":     "/health",
+			"list_tasks": "/api/tasks",
+			"task_stats": "/api/tasks/stats",
+		},
+	})
+}
+
 func (h *TaskHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]string{
 		"status":  "healthy",
